@@ -1,109 +1,82 @@
-# 🚀 AI News Portal
+# AI News Portal
 
-An automated AI-powered news website that transforms YouTube videos into professional news articles.
+[![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-Web_App-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Render](https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render&logoColor=000000)](https://render.com/)
+[![GitHub Actions](https://img.shields.io/badge/Automation-GitHub_Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/features/actions)
 
-🌐 Live Website: https://ai-daily-news-geck.onrender.com/
+An automated AI news website that turns YouTube uploads into readable news articles and publishes them to a live Flask site.
 
-The system continuously monitors YouTube channels, extracts transcripts, uses Google's Gemini AI to generate high-quality news articles, and automatically publishes them to a live website.
+## Live Website
 
----
+[https://ai-daily-news-geck.onrender.com/](https://ai-daily-news-geck.onrender.com/)
 
-## ✨ Features
+## Overview
 
-* 🎥 Monitors YouTube channels automatically
-* 📝 Extracts video transcripts using Apify
-* 🤖 Generates SEO-friendly news articles with Gemini AI
-* 🖼️ Fetches video thumbnails automatically
-* 📚 Stores articles as structured JSON files
-* 🌐 Displays articles on a Flask-powered website
-* ⚡ Fully automated using GitHub Actions
-* 🔄 Auto-deploys on Render
-* 📱 Responsive modern UI with Tailwind CSS
+This project monitors a YouTube channel, extracts the latest transcript, generates a structured article with Gemini, stores it as JSON, and serves it through a web interface.
 
----
+## Features
 
-## 🏗️ Architecture
+- Automatic YouTube video monitoring
+- Transcript extraction with Apify
+- AI-generated article writing with Gemini
+- Structured JSON article storage
+- Flask-powered frontend
+- Automated updates with GitHub Actions
+- Deployment on Render
+
+## Workflow
 
 ```text
 YouTube Upload
-      ↓
-YouTube API
-      ↓
-Transcript Extraction (Apify)
-      ↓
-Gemini AI Article Generation
-      ↓
-JSON Article Storage
-      ↓
+    ->
+YouTube API Check
+    ->
+Transcript Extraction
+    ->
+Gemini Article Generation
+    ->
+JSON Article Save
+    ->
 GitHub Actions
-      ↓
-GitHub Repository
-      ↓
+    ->
 Render Deployment
-      ↓
-Live News Website
+    ->
+Live Website
 ```
 
----
+## Tech Stack
 
-## 📂 Project Structure
+- Python
+- Flask
+- Google Gemini 2.5 Flash
+- LangChain Google GenAI
+- YouTube Data API v3
+- Apify
+- GitHub Actions
+- Render
+- HTML
+- Tailwind CSS
+
+## Project Structure
 
 ```text
 ytnews/
-│
 ├── app.py
 ├── watcher.py
 ├── requirements.txt
 ├── state.json
-│
 ├── articles/
 │   └── *.json
-│
 ├── templates/
 │   ├── index.html
 │   └── article.html
-│
 └── .github/
     └── workflows/
         └── watcher.yml
 ```
 
----
-
-## 🛠️ Tech Stack
-
-### Backend
-
-* Python
-* Flask
-* Gunicorn
-
-### AI
-
-* Google Gemini 2.5 Flash
-* LangChain Google GenAI
-
-### Data Sources
-
-* YouTube Data API v3
-* Apify YouTube Transcript Scraper
-
-### Automation
-
-* GitHub Actions
-
-### Deployment
-
-* Render
-
-### Frontend
-
-* HTML
-* Tailwind CSS
-
----
-
-## ⚙️ Environment Variables
+## Environment Variables
 
 Create a `.env` file:
 
@@ -113,32 +86,30 @@ YOUTUBE_API_KEY=your_youtube_api_key
 APIFY_TOKEN=your_apify_token
 ```
 
----
-
-## 🚀 Local Installation
+## Run Locally
 
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/ytnews.git
+git clone https://github.com/theMessiMagic/ytnews.git
 cd ytnews
 ```
 
-Create virtual environment:
+Create a virtual environment:
 
 ```bash
 python -m venv venv
 ```
 
-Activate environment:
+Activate it:
 
-### Windows
+Windows:
 
 ```bash
 venv\Scripts\activate
 ```
 
-### Linux / Mac
+Linux / Mac:
 
 ```bash
 source venv/bin/activate
@@ -150,7 +121,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Run website:
+Start the website:
 
 ```bash
 python app.py
@@ -162,91 +133,23 @@ Open:
 http://127.0.0.1:5000
 ```
 
----
-
-## 🔄 Running the News Generator
-
-Generate articles manually:
+## Generate Articles Manually
 
 ```bash
 python watcher.py
 ```
 
-The script will:
+## Deployment
 
-1. Check latest YouTube upload
-2. Extract transcript
-3. Generate article using Gemini
-4. Save article JSON
-5. Update website automatically
+The site is deployed on Render and updated automatically through GitHub Actions.
 
----
+Live URL:
+[https://ai-daily-news-geck.onrender.com/](https://ai-daily-news-geck.onrender.com/)
 
-## 🤖 Automated Workflow
+## Notes
 
-GitHub Actions runs automatically on schedule.
+This project generates articles from publicly available YouTube transcripts. Content should be reviewed before professional or commercial publishing.
 
-```text
-Every Hour
-      ↓
-Check YouTube Channel
-      ↓
-Generate New Article
-      ↓
-Commit Changes
-      ↓
-Push To GitHub
-      ↓
-Render Auto Deploy
-```
-
-No PC required.
-
----
-
-## 📸 Screenshots
-
-Add screenshots of:
-
-* Homepage
-* Article page
-* GitHub Actions workflow
-* Render deployment dashboard
-
----
-
-## 🎯 Future Improvements
-
-* Multiple YouTube channels
-* Search functionality
-* Categories and tags
-* User accounts
-* Dark mode
-* Newsletter support
-* AI article summaries
-* Trending news section
-* RSS feeds
-
----
-
-## ⚠️ Disclaimer
-
-This project generates articles using AI based on publicly available YouTube video transcripts. Generated content should be reviewed before use in professional publishing environments.
-
----
-
-## 📜 License
+## License
 
 MIT License
-
----
-
-## ⭐ Support
-
-If you found this project useful:
-
-* Star the repository ⭐
-* Fork the project 🍴
-* Share it with others 🚀
-
-Built with ❤️ using Python, Gemini AI, GitHub Actions, and Render.
