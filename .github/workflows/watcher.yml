@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
+permissions:
+  contents: write
 
 jobs:
   run:
@@ -35,5 +37,5 @@ jobs:
 
         git diff --cached --quiet || (
           git commit -m "Auto update"
-          git push
+          git push origin main
         )
