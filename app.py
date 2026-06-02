@@ -5,6 +5,8 @@ import json
 app = Flask(__name__)
 
 ARTICLES_DIR = "articles"
+CHANNEL_NAME = "AI Search"
+CHANNEL_URL = "https://www.youtube.com/@theAIsearch"
 
 
 def load_articles():
@@ -53,7 +55,9 @@ def home():
 
     return render_template(
         "index.html",
-        articles=articles
+        articles=articles,
+        channel_name=CHANNEL_NAME,
+        channel_url=CHANNEL_URL
     )
 
 
@@ -78,7 +82,9 @@ def article(article_id):
 
     return render_template(
         "article.html",
-        article=article
+        article=article,
+        channel_name=CHANNEL_NAME,
+        channel_url=CHANNEL_URL
     )
 
 

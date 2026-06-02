@@ -1,48 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ article.title }} | AI News Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(59, 130, 246, 0.10), transparent 24%),
+                radial-gradient(circle at top right, rgba(168, 85, 247, 0.08), transparent 22%),
+                #0b1120;
+        }
 
-<title>Article</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
+        .article-shell {
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            box-shadow: 0 18px 48px rgba(2, 6, 23, 0.34);
+        }
+    </style>
 </head>
+<body class="min-h-screen text-slate-100">
+{% set clean_body = article.article.replace('**', '') if article.article else '' %}
+{% set article_paragraphs = clean_body.split('\n\n') if clean_body else [] %}
 
-<body class="bg-gray-100">
+<div class="mx-auto max-w-4xl px-6 py-8 lg:px-8 lg:py-12">
+    <a href="/" class="mb-8 inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-slate-200">
+        <span aria-hidden="true">&larr;</span>
+        Back
+    </a>
 
-<div class="max-w-5xl mx-auto p-8">
+    <article class="article-shell rounded-[28px] p-6 sm:p-8 lg:p-10">
+        <header class="border-b border-white/10 pb-8">
+            <div class="flex flex-wrap items-center gap-3 text-sm text-slate-400">
+                {% if article.created_at %}
+                <span>{{ article.created_at.split('.')[0].replace('T', ' at ') }}</span>
+                {% endif %}
+                <span class="text-slate-600">/</span>
+                <a href="{{ channel_url }}" target="_blank" rel="noopener noreferrer" class="transition hover:text-slate-200">Source: {{ channel_name }}</a>
+                {% if article.video_id %}
+                <span class="text-slate-600">/</span>
+                <a href="https://www.youtube.com/watch?v={{ article.video_id }}" target="_blank" rel="noopener noreferrer" class="transition hover:text-slate-200">Watch original</a>
+                {% endif %}
+            </div>
 
-<a href="/"
-class="text-blue-600">
-← Back
-</a>
+            <h1 class="mt-5 text-4xl font-extrabold leading-tight text-white sm:text-5xl">
+                {{ article.title }}
+            </h1>
 
-<div class="bg-white p-8 mt-4 rounded shadow">
+            {% if article.summary %}
+            <p class="mt-5 max-w-3xl text-lg leading-8 text-slate-300">
+                {{ article.summary }}
+            </p>
+            {% endif %}
 
-    <img
-        src="{{ article.thumbnail }}"
-        class="w-full rounded mb-6"
-    >
+            {% if article.tags %}
+            <div class="mt-6 flex flex-wrap gap-2">
+                {% for tag in article.tags.split(',') %}
+                <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+                    {{ tag.strip() }}
+                </span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </header>
 
-    <h1 class="text-5xl font-bold mb-6 leading-tight"></h1>
-        {{ article.title }}
-    </h1>
-
-    <p class="text-2xl text-gray-600 mb-8 italic"></p>
-        {{ article.summary }}
-    </p>
-
-    <div class="text-lg leading-8 text-gray-800 whitespace-pre-line">
-        {{ article.article }}
-    </div>
-
-    <div class="mt-8 pt-4 border-t">
-        <strong>Tags:</strong>
-        {{ article.tags }}
-    </div>
-
-</div>
-
+        <div class="pt-8 space-y-6 text-[17px] leading-8 text-slate-200">
+            {% for paragraph in article_paragraphs %}
+                {% set trimmed = paragraph.strip() %}
+                {% if trimmed and trimmed != article.title %}
+                <p>{{ trimmed }}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </article>
 </div>
 
 </body>
