@@ -1,0 +1,39 @@
+name: News Bot
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - run: pip install -r requirements.txt
+    - run: pip install apify-client
+
+    - name: Run Bot
+      env:
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+      run: python watcher.py
+
+    - name: Commit Changes
+      run: |
+        git config user.name github-actions
+        git config user.email actions@github.com
+
+        git add articles state.json
+
+        git diff --cached --quiet || (
+          git commit -m "Auto update"
+          git push
+        )
