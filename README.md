@@ -2,6 +2,8 @@
 
 An automated AI-powered news website that transforms YouTube videos into professional news articles.
 
+🌐 Live Website: https://ai-daily-news-geck.onrender.com/
+
 The system continuously monitors YouTube channels, extracts transcripts, uses Google's Gemini AI to generate high-quality news articles, and automatically publishes them to a live website.
 
 ---
