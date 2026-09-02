@@ -11,7 +11,7 @@ load_dotenv()
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
 apify = ApifyClient(APIFY_TOKEN)
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
-CHANNEL_ID = "UCIgnGlGkVRhd4qNFcEwLL4A"
+CHANNEL_ID = "UCWZtQWpe1C2AksuJ5_eCMAQ"
 
 youtube = googleapiclient.discovery.build(
     "youtube",
