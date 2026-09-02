@@ -5,8 +5,8 @@ import json
 app = Flask(__name__)
 
 ARTICLES_DIR = "articles"
-CHANNEL_NAME = "AI Search"
-CHANNEL_URL = "https://www.youtube.com/@theAIsearch"
+CHANNEL_NAME = "NeonMan"
+CHANNEL_URL = "https://www.youtube.com/@NeonMan"
 
 
 def load_articles():
