@@ -144,7 +144,7 @@ python watcher.py
 The site is deployed on Render and updated automatically through GitHub Actions.
 
 Live URL:
-[https://ai-daily-news-geck.onrender.com/](https://ai-daily-news-geck.onrender.com/)
+[https://ai-daily-news-geck.onrender.com/](https://news-ai-t740.onrender.com/)
 
 ## Notes
 
