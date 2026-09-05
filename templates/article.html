@@ -81,5 +81,26 @@
     </article>
 </div>
 
+<!-- ******************************************** -->
+<script>
+(function () {
+
+    function heartbeat() {
+
+        fetch("/api/analytics/heartbeat", {
+            method: "POST",
+            credentials: "same-origin"
+        }).catch(function () {});
+
+    }
+
+    heartbeat();
+
+    setInterval(heartbeat, 15000);
+
+})();
+</script>
+<!-- ******************************************** -->
+
 </body>
 </html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Traffic Analytics</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body class="min-h-screen bg-slate-950 text-slate-100">
+
+<div class="max-w-7xl mx-auto px-5 py-8">
+
+    <!-- HEADER -->
+
+    <header class="flex flex-col
+                   md:flex-row
+                   md:items-center
+                   md:justify-between
+                   gap-4 mb-8">
+
+        <div>
+
+            <div class="text-cyan-400 text-sm
+                        font-semibold uppercase
+                        tracking-widest">
+                AI News Portal
+            </div>
+
+            <h1 class="text-3xl md:text-4xl
+                       font-extrabold mt-2">
+                Traffic Analytics
+            </h1>
+
+            <div class="flex items-center gap-2 mt-2">
+
+                <span
+                    id="liveDot"
+                    class="w-2.5 h-2.5
+                           rounded-full bg-green-400">
+                </span>
+
+                <span class="text-sm text-slate-400">
+                    Live
+                </span>
+
+                <span
+                    id="lastUpdated"
+                    class="text-sm text-slate-500 ml-2">
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="flex gap-3">
+
+            <select
+                id="period"
+                class="bg-slate-900
+                       border border-slate-800
+                       rounded-lg px-4 py-2
+                       text-sm">
+
+                <option value="1">
+                    Today
+                </option>
+
+                <option value="7" selected>
+                    Last 7 days
+                </option>
+
+                <option value="30">
+                    Last 30 days
+                </option>
+
+                <option value="90">
+                    Last 90 days
+                </option>
+
+                <option value="365">
+                    Last year
+                </option>
+
+            </select>
+
+            <a
+                href="/admin/logout"
+                class="rounded-lg
+                       border border-slate-700
+                       px-4 py-2
+                       text-sm
+                       hover:bg-slate-800">
+                Logout
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- STAT CARDS -->
+
+    <div class="grid
+                grid-cols-2
+                lg:grid-cols-5
+                gap-4 mb-8">
+
+        <div class="bg-slate-900
+                    border border-slate-800
+                    rounded-2xl p-5">
+
+            <p class="text-slate-400 text-sm">
+                Live Visitors
+            </p>
+
+            <p id="activeVisitors"
+               class="text-3xl font-bold mt-2">
+                —
+            </p>
+
+            <p class="text-green-400 text-xs mt-2">
+                Active now
+            </p>
+
+        </div>
+
+
+        <div class="bg-slate-900
+                    border border-slate-800
+                    rounded-2xl p-5">
+
+            <p class="text-slate-400 text-sm">
+                Today Visitors
+            </p>
+
+            <p id="todayVisitors"
+               class="text-3xl font-bold mt-2">
+                —
+            </p>
+
+        </div>
+
+
+        <div class="bg-slate-900
+                    border border-slate-800
+                    rounded-2xl p-5">
+
+            <p class="text-slate-400 text-sm">
+                Today Views
+            </p>
+
+            <p id="todayViews"
+               class="text-3xl font-bold mt-2">
+                —
+            </p>
+
+        </div>
+
+
+        <div class="bg-slate-900
+                    border border-slate-800
+                    rounded-2xl p-5">
+
+            <p class="text-slate-400 text-sm">
+                Unique Visitors
+            </p>
+
+            <p id="uniqueVisitors"
+               class="text-3xl font-bold mt-2">
+                —
+            </p>
+
+        </div>
+
+
+        <div class="bg-slate-900
+                    border border-slate-800
+                    rounded-2xl p-5">
+
+            <p class="text-slate-400 text-sm">
+                Page Views
+            </p>
+
+            <p id="totalViews"
+               class="text-3xl font-bold mt-2">
+                —
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- TRAFFIC GRAPH -->
+
+    <div class="bg-slate-900
+                border border-slate-800
+                rounded-2xl p-5 mb-8">
+
+        <div class="flex justify-between
+                    items-center mb-5">
+
+            <h2 class="text-xl font-bold">
+                Traffic
+            </h2>
+
+            <span class="text-xs text-slate-500">
+                Auto-refresh: 3 seconds
+            </span>
+
+        </div>
+
+        <div class="h-80">
+
+            <canvas id="trafficChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOP PAGES + DEVICES -->
+
+    <div class="grid
+                lg:grid-cols-3
+                gap-6 mb-8">
+
+        <div class="lg:col-span-2
+                    bg-slate-900
+                    border border-slate-800
+                    rounded-2xl p-5">
+
+            <h2 class="text-xl font-bold mb-5">
+                Top Pages
+            </h2>
+
+            <div id="topPages"
+                 class="space-y-3">
+            </div>
+
+        </div>
+
+
+        <div class="bg-slate-900
+                    border border-slate-800
+                    rounded-2xl p-5">
+
+            <h2 class="text-xl font-bold mb-5">
+                Devices
+            </h2>
+
+            <div class="h-64">
+
+                <canvas id="deviceChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- LIVE VISITORS -->
+
+    <div class="bg-slate-900
+                border border-slate-800
+                rounded-2xl p-5 mb-8">
+
+        <div class="flex
+                    items-center
+                    justify-between
+                    mb-5">
+
+            <h2 class="text-xl font-bold">
+                🟢 Visitors Right Now
+            </h2>
+
+            <span
+                id="liveCount"
+                class="text-sm text-green-400">
+            </span>
+
+        </div>
+
+        <div id="liveVisitors"
+             class="grid
+                    sm:grid-cols-2
+                    lg:grid-cols-4
+                    gap-3">
+        </div>
+
+    </div>
+
+
+    <!-- REFERRERS -->
+
+    <div class="bg-slate-900
+                border border-slate-800
+                rounded-2xl p-5">
+
+        <h2 class="text-xl font-bold mb-5">
+            Traffic Sources
+        </h2>
+
+        <div id="referrers"
+             class="space-y-3">
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let trafficChart = null;
+let deviceChart = null;
+
+
+function number(value) {
+
+    return new Intl.NumberFormat().format(value || 0);
+
+}
+
+
+async function loadAnalytics() {
+
+    try {
+
+        const period =
+            document.getElementById("period").value;
+
+        const response =
+            await fetch(
+                `/admin/api/analytics?days=${period}`,
+                {
+                    cache: "no-store"
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error("Analytics request failed");
+        }
+
+        const data =
+            await response.json();
+
+
+        // STAT CARDS
+
+        document.getElementById(
+            "activeVisitors"
+        ).textContent =
+            number(data.active_visitors);
+
+
+        document.getElementById(
+            "todayVisitors"
+        ).textContent =
+            number(data.today_visitors);
+
+
+        document.getElementById(
+            "todayViews"
+        ).textContent =
+            number(data.today_views);
+
+
+        document.getElementById(
+            "uniqueVisitors"
+        ).textContent =
+            number(data.unique_visitors);
+
+
+        document.getElementById(
+            "totalViews"
+        ).textContent =
+            number(data.total_views);
+
+
+        document.getElementById(
+            "liveCount"
+        ).textContent =
+            `${number(data.active_visitors)} active`;
+
+
+        document.getElementById(
+            "lastUpdated"
+        ).textContent =
+            `Updated ${new Date().toLocaleTimeString()}`;
+
+
+        // TRAFFIC CHART
+
+        const labels =
+            data.daily.map(x => x.date);
+
+        const views =
+            data.daily.map(x => x.views);
+
+        const visitors =
+            data.daily.map(x => x.visitors);
+
+
+        if (trafficChart) {
+            trafficChart.destroy();
+        }
+
+
+        trafficChart =
+            new Chart(
+                document.getElementById(
+                    "trafficChart"
+                ),
+                {
+                    type: "line",
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+
+                            {
+                                label: "Page Views",
+                                data: views,
+                                tension: 0.35
+                            },
+
+                            {
+                                label: "Visitors",
+                                data: visitors,
+                                tension: 0.35
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        interaction: {
+                            intersect: false,
+                            mode: "index"
+                        },
+
+                        plugins: {
+
+                            legend: {
+
+                                labels: {
+                                    color: "#cbd5e1"
+                                }
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                ticks: {
+                                    color: "#64748b"
+                                },
+
+                                grid: {
+                                    color:
+                                      "rgba(148,163,184,0.08)"
+                                }
+
+                            },
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+                                    color: "#64748b"
+                                },
+
+                                grid: {
+                                    color:
+                                      "rgba(148,163,184,0.08)"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+        // DEVICES
+
+        if (deviceChart) {
+            deviceChart.destroy();
+        }
+
+
+        deviceChart =
+            new Chart(
+                document.getElementById(
+                    "deviceChart"
+                ),
+                {
+
+                    type: "doughnut",
+
+                    data: {
+
+                        labels: [
+                            "Desktop",
+                            "Mobile"
+                        ],
+
+                        datasets: [
+
+                            {
+                                data: [
+                                    data.devices.desktop,
+                                    data.devices.mobile
+                                ]
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+
+                                position: "bottom",
+
+                                labels: {
+                                    color: "#cbd5e1"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+        // TOP PAGES
+
+        const pages =
+            document.getElementById(
+                "topPages"
+            );
+
+        pages.innerHTML = "";
+
+
+        data.top_pages.forEach(
+            page => {
+
+                pages.innerHTML += `
+
+                    <div class="flex items-center
+                                justify-between
+                                gap-4
+                                p-3
+                                rounded-lg
+                                bg-slate-800/50">
+
+                        <div class="min-w-0">
+
+                            <div class="text-sm
+                                        text-white
+                                        truncate">
+
+                                ${escapeHtml(page.path)}
+
+                            </div>
+
+                            <div class="text-xs
+                                        text-slate-500
+                                        mt-1">
+
+                                ${number(page.visitors)}
+                                visitors
+
+                            </div>
+
+                        </div>
+
+                        <div class="font-bold
+                                    text-cyan-300">
+
+                            ${number(page.views)}
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+
+        // LIVE VISITORS
+
+        const live =
+            document.getElementById(
+                "liveVisitors"
+            );
+
+        live.innerHTML = "";
+
+
+        if (!data.live_visitors.length) {
+
+            live.innerHTML = `
+
+                <div class="text-slate-500
+                            col-span-full
+                            py-8
+                            text-center">
+
+                    No active visitors right now.
+
+                </div>
+
+            `;
+
+        } else {
+
+            data.live_visitors.forEach(
+                visitor => {
+
+                    live.innerHTML += `
+
+                        <div class="border
+                                    border-slate-800
+                                    rounded-xl
+                                    p-4
+                                    bg-slate-800/40">
+
+                            <div class="flex
+                                        items-center
+                                        gap-2">
+
+                                <span class="w-2
+                                             h-2
+                                             rounded-full
+                                             bg-green-400">
+                                </span>
+
+                                <span class="text-sm
+                                             font-semibold">
+
+                                    Visitor
+                                    ${visitor.visitor}
+
+                                </span>
+
+                            </div>
+
+                            <div class="text-xs
+                                        text-slate-500
+                                        mt-2">
+
+                                Active recently
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+        }
+
+
+        // REFERRERS
+
+        const refs =
+            document.getElementById(
+                "referrers"
+            );
+
+        refs.innerHTML = "";
+
+
+        if (!data.referrers.length) {
+
+            refs.innerHTML = `
+
+                <div class="text-slate-500">
+                    No referral traffic recorded.
+                </div>
+
+            `;
+
+        } else {
+
+            data.referrers.forEach(
+                ref => {
+
+                    refs.innerHTML += `
+
+                        <div class="flex
+                                    justify-between
+                                    gap-4
+                                    p-3
+                                    rounded-lg
+                                    bg-slate-800/50">
+
+                            <span class="text-sm
+                                         text-slate-300
+                                         truncate">
+
+                                ${escapeHtml(
+                                    ref.referrer
+                                )}
+
+                            </span>
+
+                            <span class="font-bold
+                                         text-cyan-300">
+
+                                ${number(ref.views)}
+
+                            </span>
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+        }
+
+
+        document
+            .getElementById("liveDot")
+            .classList.remove("bg-red-400");
+
+        document
+            .getElementById("liveDot")
+            .classList.add("bg-green-400");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        document
+            .getElementById("liveDot")
+            .classList.remove("bg-green-400");
+
+        document
+            .getElementById("liveDot")
+            .classList.add("bg-red-400");
+
+    }
+
+}
+
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+document
+    .getElementById("period")
+    .addEventListener(
+        "change",
+        loadAnalytics
+    );
+
+
+loadAnalytics();
+
+
+// REFRESH EVERY 3 SECONDS
+
+setInterval(
+    loadAnalytics,
+    3000
+);
+
+</script>
+
+</body>
+</html>
