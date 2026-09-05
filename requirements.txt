@@ -4,6 +4,6 @@ langchain-google-genai
 google-api-python-client
 python-dotenv
 gunicorn
-
+user-agents
 apify-client
 psycopg2-binary

@@ -3,6 +3,7 @@ import os
 import json
 
 # --------------------------------------------------------------
+from user_agents import parse
 import psycopg2
 import psycopg2.extras
 import uuid
@@ -459,15 +460,35 @@ def analytics_api():
     # Live visitors
     cur.execute("""
         SELECT
-            visitor_id,
-            last_seen
-        FROM visitors
-        WHERE last_seen >= NOW() - INTERVAL '60 seconds'
-        ORDER BY last_seen DESC
-        LIMIT 50
+    v.visitor_id,
+    v.last_seen,
+    pv.user_agent
+FROM visitors v
+LEFT JOIN LATERAL (
+    SELECT user_agent
+    FROM page_views
+    WHERE visitor_id = v.visitor_id
+    ORDER BY created_at DESC
+    LIMIT 1
+) pv ON TRUE
     """)
 
     live_visitors = cur.fetchall()
+
+    # Device statistics
+    cur.execute("""
+        SELECT
+            COUNT(*) FILTER (
+                WHERE user_agent ILIKE '%%Mobile%%'
+            ) AS mobile,
+            COUNT(*) FILTER (
+                WHERE user_agent NOT ILIKE '%%Mobile%%'
+            ) AS desktop
+        FROM page_views
+        WHERE created_at >= NOW() - (%s * INTERVAL '1 day')
+    """, (days,))
+
+    device_stats = cur.fetchone()
 
     cur.close()
     db.close()
@@ -478,6 +499,10 @@ def analytics_api():
         "active_visitors": active_visitors,
         "today_views": today_views,
         "today_visitors": today_visitors,
+        "devices": {
+            "desktop": device_stats["desktop"],
+            "mobile": device_stats["mobile"]
+        },
         "daily": [
             {
                 "date": str(x["date"]),
@@ -504,7 +529,18 @@ def analytics_api():
         "live_visitors": [
             {
                 "visitor": x["visitor_id"][:8],
-                "last_seen": x["last_seen"].isoformat()
+                "last_seen": x["last_seen"].isoformat(),
+                "device": (
+                    "Mobile" if parse(x["user_agent"] or "").is_mobile
+                    else "Tablet" if parse(x["user_agent"] or "").is_tablet
+                    else "Desktop"
+                ),
+                "browser": parse(x["user_agent"] or "").browser.family,
+                "os": parse(x["user_agent"] or "").os.family,
+                "os_version": ".".join(
+                    str(v) for v in parse(x["user_agent"] or "").os.version
+                ),
+                "device_model": parse(x["user_agent"] or "").device.family
             }
             for x in live_visitors
         ]
