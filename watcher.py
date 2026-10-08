@@ -128,6 +128,7 @@ IMPORTANT:
 - Ignore sponsors, advertisements, affiliate promotions, discount codes and paid partnerships.
 - Do not include sponsor sections in the article.
 - Focus only on the actual news or technology discussed.
+- Separate the news into segments and add heading for multiple topics.
 
 Return EXACTLY in this format:
 
